@@ -1,23 +1,24 @@
 #include <iostream>
 #include <string.h>
+#include <queue>
 
 using namespace std;
 
-int map[20005][20005];
-int visited[20005];
+//bfs로 풀어야함 
 
-void changeVToA(vector<pair<int, int>> map)
+int map[20005][20005];
+
+void changeVToA(vector<pair<int, int>> edge)
 {
 	memset(map, 0, sizeof(map));
-	memset(visited, 0, sizeof(visited));
 
-	for(int i = 0; i < map.size(); ++i)
+	for(int i = 0; i < edge.size(); ++i)
 	{
-		int start = map[i].first;
-		int end = map[i].second;
+		int start = edge[i].first;
+		int end = edge[i].second;
 
 		map[start][end] = 1;
-		map[end][start] = 1
+		map[end][start] = 1;
 	}
 }
 
@@ -28,21 +29,47 @@ int max(int n1, int n2){
 	return n2;
 }
 
-int search(int n, int start, int len)
+int search(int n)
 {
-	visited[start] = 1;
+	queue<pair<int, int>> q;
+	q.push(make_pair(1, 0));
 
-	int answer = -1;
+	vector<int> dist(n + 1, 987654321);
 
-	for(int i = 1; i <= n; ++i)
+	while(!q.empty())
 	{
-		if(visited[i] == 0 && map[start][i] == 1)
+		int node = q.front().first;
+		int len = q.front().second;
+
+		q.pop();
+
+		if(len >= dist[node])
+			continue;
+		dist[node] = len;
+
+		for(int i = 1; i <= n; ++i)
 		{
-			answer = max(answer, search(n, i, len + 1));
+			if(len + 1 < dist[i] && map[node][i] == 1)
+			{
+				q.push(make_pair(i, len + 1));
+			}
 		}
 	}
 
-	visited[start] = 0;
+	int answer = 0;
+	int maxLen = 0;
+
+	for(int i = 1; i <= n; ++i)
+	{
+		cout << dist[i] << " ";
+		if(maxLen < dist[i])
+		{
+			maxLen = dist[i];
+			answer = 1;
+		}
+		else if(maxLen == dist[i])
+			++answer;
+	}
 
 	return answer;
 }
@@ -71,26 +98,7 @@ int main(void)
 		}
 
 		changeVToA(list);
-		visited[1] = 1;
+		cout << search(nodeCount) << endl;
 		
-		int maxLen = -1;
-		int answer = 0;
-
-		for(int i = 0; i < n; ++i)
-		{
-			if(map[1][i] == 1)
-			{
-				int cand = search(n, i , 0);
-
-				if(maxLen == cand)
-					++answer;
-				else if(maxLen < cand)
-				{
-					answer = 0;
-					maxLen = cand;
-				}
-			}
-		}
-		cout << answer << endl;
 	}
 }
