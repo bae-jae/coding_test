@@ -1,33 +1,41 @@
 #include <iostream>
-#include <vector>
-#include <algorithm>
+#include <string.h>
 
 using namespace std;
-int min(int n1, int n2)
-{
-	if(n1 < n2)
-		return n1;
-	return n2;
 
+int map[1005][1005];
+int visited[1005];
+int answer, n;
+
+void init(void)
+{
+	answer = 0;
+
+	memset(visited, 0, sizeof(visited));
+	memset(map, 0, sizeof(map));
 }
-int search(vector<pair<int, int>>& routes)
+
+int dfs(int here)
 {
-	sort(routes.begin(), routes.end());
-	int answer = 0;
-	int lastCamera = 300001;
+	int child[3] = {0, 0, 0};
+	visited[here] = 1;
 
-	for(int i = routes.size() - 1; i >= 0; --i)
+	for(int i = 0; i < n; ++i)
 	{
-		if(lastCamera > routes[i].second)
-		{
-			++answer;
-			lastCamera = routes[i].first;
-		}
-
-		cout <<routes[i].first << " " << lastCamera << endl;
+		if(map[here][i] == 1 && visited[i] == 0)
+			++child[dfs(i)];
 	}
 
-	return answer;
+	if(child[0] != 0)
+	{
+		++answer;
+		return 2;
+	}
+
+	if(child[2] != 0)
+		return 1;
+
+	return 0;
 }
 
 int main(void)
@@ -37,19 +45,27 @@ int main(void)
 
 	for(int test = 0; test < tc; ++test)
 	{
-		int n;
-		cin >> n;
-		
-		vector<pair<int, int>> routes;
+		int k;
+		cin >> n >> k;
+
+		init();
+
+		for(int i = 0; i < k; ++i)
+		{
+			int here, there;
+			cin >> here >> there;
+
+			map[here][there] = 1;
+			map[there][here] = 1;
+		}
 
 		for(int i = 0; i < n; ++i)
 		{
-			int f, s;
-			cin >> f >> s;
+			if(!visited[i] && dfs(i) == 0)
+				++answer;
 
-			routes.push_back(make_pair(f, s));
 		}
 
-		cout << search(routes);
+		cout << answer << "\n";
 	}
 }

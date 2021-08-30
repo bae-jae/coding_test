@@ -1,0 +1,76 @@
+#include <iostream>
+#include <vector>
+#include <cstring>
+
+using namespace std;
+
+
+vector<vector<int>> returnList;
+vector<int> answer;
+
+int cache[21][301];
+
+int search(int pick, int money)
+{
+	if(pick == returnList.size())
+		return 0;
+
+	int&ret = cache[pick][money];
+
+	if(ret != -1)
+		return ret;
+
+	for(int i = 0; i < returnList.size(); ++i)
+	{
+		int cost = returnList[i][0];
+		int earn = returnList[i][pick];
+		int cand = -1;
+
+		if(cost <= money)
+			cand = search(pick + 1, money - cost) + earn;
+		else
+			cand = search(pick + 1, money);
+
+		if(ret < cand){
+			ret = cand;
+			//answer.push_back(earn);
+		}
+	}
+
+	return ret;
+}
+
+int main(void)
+{
+	int n, m;
+	cin >> n >> m;
+
+	memset(cache, -1, sizeof(cache));
+
+	for(int i = 0; i < n; ++i)
+	{
+		vector<int> v;
+
+		int funding;
+		cin >> funding;
+
+		v.push_back(funding);
+		v.push_back(0);
+
+		for(int j = 0; j < m; ++j)
+		{
+			int s;
+			cin >> s;
+
+			v.push_back(s);
+		}
+
+		returnList.push_back(v);
+	}
+
+	cout << search(1, n) << "\n";
+
+	for(int i =0; i < answer.size(); ++i)
+		cout << answer[i] << " ";
+	cout << "\n";
+}
