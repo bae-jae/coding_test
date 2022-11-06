@@ -23,8 +23,12 @@ def sum_watching_player(psum_of_time, logs):
     for log in logs:
         start_time, end_time = map(chagne_time_to_sec, log.split("-"))
 
-        for i in range(start_time, end_time):
-            psum_of_time[i] = psum_of_time[i] + 1
+        psum_of_time[start_time] = psum_of_time[start_time] + 1
+        psum_of_time[end_time] = psum_of_time[end_time] -1
+
+
+    for i in range(1, len(psum_of_time)):
+        psum_of_time[i] = psum_of_time[i] + psum_of_time[i - 1]
 
 def solution(play_time, adv_time, logs):
     answer = ''
