@@ -8,17 +8,48 @@ def get_longest_site(site, n):
     
     return move
 
-def remove_box(deliveries, longest_point, cap):
-    for i in range(longest_point, 0, -1):
-        if cap == 0:
-            break
+def caculate_spend_day(deliveries, cap):
+    needed_day = [0] * len(deliveries)
+    n = len(deliveries)
+    max_cap = cap
+    day = 1
 
-        if cap >= deliveries[i]:
-            cap -= deliveries[i]
-            deliveries[i] = 0
+    site_idx = n - 1
+    
+    while 0 <= site_idx:
+        if deliveries[site_idx] == 0:
+            site_idx -= 1
+            continue
+
+        #이번 장소에 있는 물건은 충분히 다을 수 있음
+        if deliveries[site_idx] <= cap:
+            cap -= deliveries[site_idx]
+            deliveries[site_idx] = 0
+            needed_day[site_idx] = day
+
+        #이번 장소에 있는 물건은 담을 수 없음
         else:
-            deliveries[i] = deliveries[i] - cap
-            cap = 0
+            deliveries[site_idx] = deliveries[site_idx] - cap #당믈 수 있는 만큼 담아서 출발
+            day += 1                           
+            cap = max_cap
+    
+    return needed_day
+
+def calculated_move(result, n):
+    answer = 0
+    spended_day = 0
+
+    for i in range(n, 0, -1):
+        day = result[i] - spended_day
+
+        if day <= 0:
+            continue
+
+        spended_day += day
+        print(i)
+        answer += day * (i * 2)
+
+    return answer
 
 def solution(cap, n, deliveries, pickups):
     answer = 0
@@ -26,29 +57,22 @@ def solution(cap, n, deliveries, pickups):
     deliveries.insert(0, 0)
     pickups.insert(0, 0)
 
-    
-    while True:
-        longest_deliver_point = get_longest_site(deliveries, n)
-        longest_pick_point = get_longest_site(pickups, n)
+    calc_delivers = caculate_spend_day(deliveries, cap)
+    calc_pickups = caculate_spend_day(pickups, cap)
 
-        move = max(longest_deliver_point, longest_pick_point)
+    result = []
 
-        if move == 0:
-            break
+    for i in range(len(calc_delivers)):
+        result.append(max(calc_delivers[i], calc_pickups[i]))    
 
-        n = move
-        answer += (move * 2)
-
-        remove_box(deliveries, longest_deliver_point, cap)
-        remove_box(pickups, longest_pick_point, cap)
-
+    answer = calculated_move(result, n)
     return answer
 
 if __name__ == "__main__":
     cap = 4	
-    n = 5	
-    deliveries =[1, 0, 3, 1, 2]
-    pickups = [0, 3, 0, 4, 0]	
+    n = 6	
+    deliveries =[1, 0, 3, 1, 2, 0]
+    pickups = [0, 3, 0, 4, 0, 1]	
     result = 16
 
     print(solution(cap, n, deliveries, pickups))
