@@ -1,9 +1,10 @@
-name: Pylint
+name: TestWorkFlow
 
 on: [push]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      rub: echo 'Hello'
+  services:
+    jobs:
+      runs-on: ubuntu-latest
+      steps:
+        - run: echo 'Hello, GitHub Actions!'
