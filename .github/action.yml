@@ -1,0 +1,8 @@
+name: Our First Workflow
+run-name: Bae is testing out GitHub Actions 🚀
+on: push
+jobs:
+  echo:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo 'Hello, GitHub Actions!'
