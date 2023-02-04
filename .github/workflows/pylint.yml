@@ -1,9 +1,18 @@
 name: TestWorkFlow
 
-on: [push]
+on: [push]  #push마다 해당 액션 수행됨
 
 jobs:
-  services:
-      runs-on: ubuntu-latest
-      steps:
+  services: #서비스 이름
+      runs-on: ubuntu-latest #어느 환경에서 돌아가는지 
+      steps:  #돌아가는 일들을 정의함 
         - run: echo 'Hello, GitHub Actions!'
+
+  pwd-ld:
+    name: NAME
+    runs-on: ubuntu-latest #어느 환경에서 돌아가는지 
+    steps:
+      - name: Print working
+        run: pwd
+      - name: List Files
+        run: ls -al
