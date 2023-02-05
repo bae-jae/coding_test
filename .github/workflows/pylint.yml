@@ -4,7 +4,7 @@ on: [push]  #push마다 해당 액션 수행됨
 
 jobs:
   checkout: #서비스 이름
-      runs-on: ubuntu-latest #어느 환경에서 돌아가는지 
-      steps:  #돌아가는 일들을 정의함 
-        - run: ls -al
-        - uses: actions/checkout@v3
+    runs-on: ubuntu-latest #어느 환경에서 돌아가는지 
+    steps:  #돌아가는 일들을 정의함 
+      - uses: actions/checkout@v3
+      - run: echo "hello"
